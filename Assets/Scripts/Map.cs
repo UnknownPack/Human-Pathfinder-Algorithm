@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 public class Map : MonoBehaviour
 {
     public int size;
+    public int numberOfColonies = 4;
+    public int numberOfResourceNodes = 9;
     public GameObject tilePrefab;
     public Dictionary<Vector2, Tile> map;
     private Dictionary<Vector2, GameObject> _grids;
@@ -17,7 +19,13 @@ public class Map : MonoBehaviour
     {
         GenerateNodes();  
     }
-    
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+            GenerateNodes(); 
+    }
+
     [ContextMenu("Generate Nodes")]
     public void GenerateNodes()
     { 
@@ -42,15 +50,43 @@ public class Map : MonoBehaviour
 
     private void ProcedurallyGenerateNodes(Dictionary<Vector2, Tile> input)
     {
-        foreach (KeyValuePair<Vector2, Tile> entry in input)
-        { 
-            Tile tile = entry.Value;  
-            int randomIndex = Random.Range(0, Enum.GetNames(typeof(TileType)).Length-2);
-            TileType randomTileType = (TileType)randomIndex;
-            tile.setTileType(randomTileType);
+        // Get all eligible positions (excluding player/enemy positions)
+        List<Vector2> positions = new List<Vector2>(input.Keys);
+        positions.Remove(new Vector2(-size, -size)); // player position
+        positions.Remove(new Vector2(size, size));   // enemy position
+
+        // Shuffle the list
+        for (int i = 0; i < positions.Count; i++)
+        {
+            Vector2 temp = positions[i];
+            int randomIndex = Random.Range(i, positions.Count);
+            positions[i] = positions[randomIndex];
+            positions[randomIndex] = temp;
         }
-        input[new Vector2(-size,-size)].setTileType(TileType.playerOwner);
-        input[new Vector2(size,size)].setTileType(TileType.enemyOwned);
+
+        int index = 0;
+
+        // Assign resource tiles
+        for (int i = 0; i < numberOfResourceNodes && index < positions.Count; i++, index++)
+        {
+            input[positions[index]].setTileType(TileType.resourceTile);
+        }
+
+        // Assign neutral colonies
+        for (int i = 0; i < numberOfColonies && index < positions.Count; i++, index++)
+        {
+            input[positions[index]].setTileType(TileType.neutralColony);
+        }
+
+        // Assign the rest as base tiles
+        for (; index < positions.Count; index++)
+        {
+            input[positions[index]].setTileType(TileType.baseTile);
+        }
+
+        // Manually assign player and enemy tiles
+        input[new Vector2(-size, -size)].setTileType(TileType.playerOwner);
+        input[new Vector2(size, size)].setTileType(TileType.enemyOwned);
     }
  
 
