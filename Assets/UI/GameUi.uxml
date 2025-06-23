@@ -1,0 +1,14 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement style="flex-grow: 1; width: 25%;">
+            <ui:VisualElement name="AntPannel" style="flex-grow: 1; width: 30%; background-color: rgb(0, 0, 0);">
+                <ui:VisualElement style="flex-grow: 1; width: 75%; height: 75%; align-self: center; min-height: 75%; max-height: 75%; align-content: center; top: 80px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; width: 25%; flex-direction: column;">
+            <ui:VisualElement name="ResourcePanel" style="flex-grow: 1; width: 30%; flex-direction: column; left: auto; background-color: rgb(0, 0, 0); align-items: flex-end; align-self: flex-end;">
+                <ui:VisualElement style="flex-grow: 1; width: 75%; height: 75%; align-self: center; min-height: 75%; max-height: 75%; align-content: center; top: 80px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
