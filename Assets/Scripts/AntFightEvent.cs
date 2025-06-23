@@ -56,6 +56,14 @@ public class AntFightEvent : MonoBehaviour
         {
             yield return new WaitForSeconds(1 / ant2.getSpeed());
             float random = (int)Mathf.Floor(UnityEngine.Random.Range(0, 2));
+            if (ant1.entityEngagedInBattle != ant2)
+            {
+                if (ant2.entityEngagedInBattle == ant1)
+                {
+                    StartCoroutine(antBattleSame(ant2,ant1));
+                }
+            }
+            else
             if (random == 0)
             {
                 StartCoroutine(antBattleSame(ant1, ant2));
@@ -83,12 +91,19 @@ public class AntFightEvent : MonoBehaviour
        while (ant1.getHealth() > 0 && ant2.getHealth() > 0)
         {
             yield return new WaitForSeconds(1 / ant1.getSpeed());
-            if (ant2.DamageAnt(ant1.getAttack()))
+            if (ant1.entityEngagedInBattle != ant2)
+            {
+                Debug.Log("We aint fighting this one");
+            }
+            else if (ant2.DamageAnt(ant1.getAttack()))
             {
                 Debug.Log("Ant has been defeated" + ant2.gameObject.name);
-                endBattles();
                 ant1.inBattle = false;
-            }
+                ant2.inBattle = false;
+                ant1.entityEngagedInBattle = null;
+                endBattles();
+                
+                }
             yield return null;
         }
         yield return null;

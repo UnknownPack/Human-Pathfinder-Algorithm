@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7f09e82035e44b9baca5868367d8df, type: 3}
   m_Name: BaseAnt
   m_EditorClassIdentifier: 
-  health: 10
+  health: 20
   attack: 1
   speed: 2

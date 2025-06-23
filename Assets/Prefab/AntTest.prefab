@@ -79,7 +79,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -6212091817297008591, guid: 4c051a6bcf1a14c818e3d887beb6024d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -107,6 +107,8 @@ MonoBehaviour:
   sprite: {fileID: 1438828572978263435}
   faction: {fileID: 0}
   fakeAlliedFaction: 
+  inBattle: 0
+  entityEngagedInBattle: {fileID: 0}
 --- !u!61 &1814820362463741519
 BoxCollider2D:
   m_ObjectHideFlags: 0
