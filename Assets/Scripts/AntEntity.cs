@@ -3,12 +3,17 @@ using UnityEngine;
 public class AntEntity : MonoBehaviour
 {
     public AntScriptableObject antConfig;
+    public SpriteRenderer sprite;
     private float health;
     private float attack;
     private float speed;
     private AlliedFaction faction;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
+    {
+        SetStats();
+    }
+    private void SetStats()
     {
         health = antConfig.health;
         attack = antConfig.attack;
@@ -22,7 +27,11 @@ public class AntEntity : MonoBehaviour
             DamageAnt(1);
             Debug.Log("Damaged ant for 1, this is its current health " + health);
         }
-        
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            SetStats();
+        }
+
     }
 
 
@@ -41,16 +50,30 @@ public class AntEntity : MonoBehaviour
         //float newAttack = attack * faction.attackMult
         return attack;
     }
-    public void DamageAnt(float damage)
+
+
+    public bool DamageAnt(float damage)
     {
         health -= damage;
+        sprite.color = new Color(1, 0, 0);
+        Invoke("changeColourBack", 0.1f);
         if (health <= 0)
         {
             //ant would die here
             Debug.Log("IM DEAD");
+            return true;
         }
-
+        else
+        {
+            return false;
+        }
         
+
+
+    }
+    public void changeColourBack()
+    {
+        sprite.color = new Color(1, 1, 1);
     }
 
     
