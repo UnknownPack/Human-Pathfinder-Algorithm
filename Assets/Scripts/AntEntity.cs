@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class AntEntity : MonoBehaviour
@@ -50,6 +51,10 @@ public class AntEntity : MonoBehaviour
         //float newAttack = attack * faction.attackMult
         return attack;
     }
+    public BaseFaction getFaction()
+    {
+        return faction;
+    }
 
 
     public bool DamageAnt(float damage)
@@ -67,7 +72,7 @@ public class AntEntity : MonoBehaviour
         {
             return false;
         }
-        
+
 
 
     }
