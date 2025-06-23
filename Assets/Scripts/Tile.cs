@@ -56,6 +56,9 @@ public class Tile
             case TileType.resourceTile:
                 color = Color.green;
                 break;
+            case TileType.oblivion:
+                color = Color.black;
+                break;
             default:
                 break;
         }
@@ -68,6 +71,8 @@ public enum TileType
     baseTile,
     resourceTile,
     neutralColony,
+    oblivion,
+    increaseTimer,
     playerOwner,
-    enemyOwned 
+    enemyOwned
 }

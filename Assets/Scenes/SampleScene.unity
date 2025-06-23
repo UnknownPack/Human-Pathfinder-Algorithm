@@ -131,7 +131,6 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
-  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -223,10 +222,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 2000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6.06
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -257,25 +256,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: f457dbdb540b75743abb856df680657d, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 39d19e76d859d6b41979c4bc18402f40, type: 3}
-  m_SortingOrder: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,6 +432,7 @@ GameObject:
   - component: {fileID: 1820868459}
   - component: {fileID: 1820868458}
   - component: {fileID: 1820868460}
+  - component: {fileID: 1820868461}
   m_Layer: 0
   m_Name: Node Generator
   m_TagString: Untagged
@@ -471,9 +452,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bd07707a00322e479c61b596736c2b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camera: {fileID: 519420028}
+  goalVector2: {x: 0, y: 0}
   size: 4
   numberOfColonies: 4
   numberOfResourceNodes: 9
+  numberOfWall: 4
   tilePrefab: {fileID: 9157885502398372776, guid: cc587a18548e76741ac62d7c2927a110, type: 3}
 --- !u!4 &1820868457
 Transform:
@@ -519,7 +503,9 @@ MonoBehaviour:
   playerNode_Preview: {fileID: 3842342173373196000, guid: 310d39f9dfebc6b47a0afd47e5a60720, type: 3}
   captureTime: 1.5
   captureTimePerNode: 0.25
-  playerCaptureColor: {r: 0.09168931, g: 0.22367449, b: 0.47798735, a: 1}
+  playerCaptureColor_baseTile: {r: 0.3679244, g: 1, b: 0.9635216, a: 1}
+  playerCaptureColor_resourceTile: {r: 0, g: 0.6501188, b: 1, a: 1}
+  playerCaptureColor_neutralColony: {r: 0, g: 0.29613113, b: 1, a: 1}
 --- !u!114 &1820868460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,6 +518,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd7183a89400354e8cb9d65da91ad42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1820868461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820868455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: f457dbdb540b75743abb856df680657d, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 39d19e76d859d6b41979c4bc18402f40, type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
