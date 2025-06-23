@@ -2,67 +2,57 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Map : MonoBehaviour
 {
     public int size;
     public GameObject tilePrefab;
     public Dictionary<Vector2, Tile> map;
-    private List<GameObject> grids;
+    private Dictionary<Vector2, GameObject> _grids;
 
     #region Setup
 
+    void Awake()
+    {
+        GenerateNodes();  
+    }
+    
     [ContextMenu("Generate Nodes")]
     public void GenerateNodes()
-    {
-        int start = size / 2;
-        int y = start / 2;
+    { 
         map = new Dictionary<Vector2, Tile>();
-        grids = new List<GameObject>();
+        _grids = new Dictionary<Vector2, GameObject>();
         GameObject prefab = new GameObject(" --- Nodes --- ");
-        for (int i = -start; i < start; i++)
+        for (int i = -size; i <= size; i++)
         {
-            for (int p = -y; p < y; p++)
+            for (int p = -size; p <= size; p++)
             {
                 Vector2 position = new Vector2(i, p);
-                map[position] = new Tile(tilePrefab, position);
-                //Debug.Log($"New tile created at positon{i}, {p}");
-                GameObject tile = Instantiate(tilePrefab);
-                grids.Add(tile);
-                tile.transform.SetParent(prefab.transform, worldPositionStays: true);
+                GameObject tile = Instantiate(tilePrefab, prefab.transform, true);
                 tile.transform.position = new Vector3(i, p, 10);
+            
+                _grids.Add(position, tile);
+                map[position] = new Tile(tile, position);
             }
         }
 
         ProcedurallyGenerateNodes(map);
     }
 
-    [ContextMenu("Clear Nodes")]
-    public void ClearNodes()
-    {
-        map = new Dictionary<Vector2, Tile>();
-        foreach (var tile in grids)
-        {
-            DestroyImmediate(tile);
-        }
-        grids.Clear();
-    }
-
     private void ProcedurallyGenerateNodes(Dictionary<Vector2, Tile> input)
     {
-        //foreach (Tile tile in map)
-        {
-            //if(isOuterEdge(tile,size / 2, size / 4))
-                //continue;
-            
-            
+        foreach (KeyValuePair<Vector2, Tile> entry in input)
+        { 
+            Tile tile = entry.Value;  
+            int randomIndex = Random.Range(0, Enum.GetNames(typeof(TileType)).Length-2);
+            TileType randomTileType = (TileType)randomIndex;
+            tile.setTileType(randomTileType);
         }
+        input[new Vector2(-size,-size)].setTileType(TileType.playerOwner);
+        input[new Vector2(size,size)].setTileType(TileType.enemyOwned);
     }
-
-    private bool isOuterEdge(Tile tile, int x, int y)
-    {
-        return tile.Position.x != x || tile.Position.x != -x || tile.Position.y != -y || tile.Position.y != y;
-    }
+ 
 
     #endregion
 

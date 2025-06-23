@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ant hill_0: 845435305541144168
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

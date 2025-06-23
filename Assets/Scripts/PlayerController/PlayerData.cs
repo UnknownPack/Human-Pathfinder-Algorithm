@@ -4,7 +4,6 @@ public class PlayerData : MonoBehaviour
 {
     public GameObject antPrefab;
     public int numberOfAnts;
-    private float spawnRate;
     private float spawnRateCounter = 0;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,7 +15,8 @@ public class PlayerData : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        spawnRateCounter += (spawnRate * Time.deltaTime);
+        spawnRateCounter +=  Time.deltaTime;
+        //Debug.Log($"{spawnRateCounter}/1");
         if (spawnRateCounter >= 1)
         {
             numberOfAnts++;

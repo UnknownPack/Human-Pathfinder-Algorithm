@@ -17,26 +17,27 @@ public class PlayerController : MonoBehaviour
 
     void manageSelectedTile()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0)) 
         {
             Debug.Log("Pressed");
-            if (Physics.Raycast(ray, out hit))
+        
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+        
+            if (hit.collider != null && hit.collider.gameObject.CompareTag("Tile"))
             {
-                if (hit.collider.gameObject.CompareTag("Tile")){
-                    Vector2 tilePosition = hit.collider.gameObject.transform.position;
-                    Vector2 key = new Vector2(Mathf.Round(tilePosition.x), Mathf.Round(tilePosition.y));
-                    selectedTile = GameManager.Instance.map[key];
-                    //SpawnUiAtTile(selectedTile);
-                    Debug.Log($"{key} tile is assigned");
-                }
-                else
-                    selectedTile = null;
+                Vector2 tilePosition = hit.collider.gameObject.transform.position;
+                Vector2 key = new Vector2(Mathf.Round(tilePosition.x), Mathf.Round(tilePosition.y));
+                selectedTile = GetComponent<Map>().map[key];
+                Debug.Log($"{key} tile is assigned");
             }
-            
-        } 
+            else
+            {
+                selectedTile = null;
+            }
+        }
     }
+
 
     void SpawnUiAtTile(Tile tile)
     {

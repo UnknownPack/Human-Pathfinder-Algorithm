@@ -50,6 +50,9 @@ public class Tile
             case TileType.enemyOwned:
                 color = Color.red;
                 break;
+            case TileType.neutralColony:
+                color = Color.yellow;
+                break;
             case TileType.resourceTile:
                 color = Color.green;
                 break;
@@ -63,7 +66,8 @@ public class Tile
 public enum TileType
 {
     baseTile,
-    enemyOwned,
     resourceTile,
-    playerOwner
+    neutralColony,
+    playerOwner,
+    enemyOwned 
 }

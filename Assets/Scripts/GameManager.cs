@@ -17,9 +17,7 @@ public class GameManager : MonoBehaviour
     }
     
     void Start()
-    {
-        mapComponent = GetComponent<Map>();
-        map = mapComponent.map;
+    { 
     }
 
     // Update is called once per frame
