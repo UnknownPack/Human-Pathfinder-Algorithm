@@ -6,12 +6,16 @@ public class Tile
     public Resource resource;
     public Vector2 Position;
     public TileType tileType;
+    public GameObject tile;
+    private SpriteRenderer _spriteRenderer;
     
 
-    public Tile(Vector2 position)
+    public Tile(GameObject gameObject, Vector2 position)
     {
         owner = null;
         resource = null;
+        tile = gameObject;
+        _spriteRenderer = tile.GetComponent<SpriteRenderer>();
         tileType = TileType.baseTile;
         Position = position;
     }
@@ -19,13 +23,47 @@ public class Tile
     public void SetOwener(BaseFaction baseFaction)
     {
         owner = baseFaction;
-        tileType = TileType.colonizedTile;
+        if(baseFaction is EnemyFaction )
+            tileType = TileType.enemyOwned;
+        else if (baseFaction is AlliedFaction)
+            tileType = TileType.playerOwner;
+    }
+    
+
+    public void setTileType(TileType type)
+    {
+        tileType = type;
+        setTileColour();
+    }
+
+    private void setTileColour()
+    {
+        Color color = Color.white;
+        switch (tileType)
+        {
+            case (TileType.baseTile):
+                color = Color.gray;
+                break;
+            case (TileType.playerOwner):
+                color = Color.blue;
+                break;
+            case TileType.enemyOwned:
+                color = Color.red;
+                break;
+            case TileType.resourceTile:
+                color = Color.green;
+                break;
+            default:
+                break;
+        }
+        _spriteRenderer.color = color;
     }
 }
 
 public enum TileType
 {
     baseTile,
-    colonizedTile,
-    resourceTile
+    enemyOwned,
+    resourceTile,
+    playerOwner
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,8 +6,10 @@ public class Map : MonoBehaviour
 {
     public int size;
     public GameObject tilePrefab;
-    private Dictionary<Vector2, Tile> map;
+    public Dictionary<Vector2, Tile> map;
     private List<GameObject> grids;
+
+    #region Setup
 
     [ContextMenu("Generate Nodes")]
     public void GenerateNodes()
@@ -20,7 +23,7 @@ public class Map : MonoBehaviour
             for (int p = -start; p < start; p++)
             {
                 Vector2 position = new Vector2(i, p);
-                map[position] = new Tile(position);
+                map[position] = new Tile(tilePrefab, position);
                 //Debug.Log($"New tile created at positon{i}, {p}");
                 GameObject tile = Instantiate(tilePrefab);
                 grids.Add(tile);
@@ -40,4 +43,16 @@ public class Map : MonoBehaviour
         }
         grids.Clear();
     }
+
+    #endregion
+
+    #region Helper Methods
+
+    public Dictionary<Vector2, Tile> getMap()
+    {
+        return map;
+    }
+
+    #endregion
+
 }
