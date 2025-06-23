@@ -16,13 +16,13 @@ public class AntFightEvent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.E))
+       /* if (Input.GetKeyUp(KeyCode.E))
         {
             battles = new Coroutine[2];
             if (ants1.getSpeed() == ants2.getSpeed())
             {
                 Debug.Log("Both ants have same speed, randomising turns");
-                StartCoroutine(sameSpeed());
+              //  StartCoroutine(sameSpeed(ant1, ant2));
             }
             else
             {
@@ -31,30 +31,47 @@ public class AntFightEvent : MonoBehaviour
                 battles[1] = StartCoroutine(antBattle(ants2, ants1));
             }
 
-        }
+        }*/
     }
-    public IEnumerator sameSpeed()
+
+    public void StartFight(AntEntity ant1, AntEntity ant2)
     {
-        while (ants1.getHealth() > 0 && ants2.getHealth() > 0)
+        battles = new Coroutine[2];
+        if (ant1.getSpeed() == ant2.getSpeed())
         {
-            yield return new WaitForSeconds(1 / ants2.getSpeed());
+            Debug.Log("Both ants have same speed, randomising turns");
+            StartCoroutine(sameSpeed(ant1, ant2));
+        }
+        else
+        {
+            Debug.Log("Ants have different speed");
+            battles[0] = StartCoroutine(antBattle(ant1, ant2));
+            battles[1] = StartCoroutine(antBattle(ant1, ant2));
+        }
+
+    }
+    public IEnumerator sameSpeed(AntEntity ant1, AntEntity ant2)
+    {
+        while (ant1.getHealth() > 0 && ant2.getHealth() > 0)
+        {
+            yield return new WaitForSeconds(1 / ant2.getSpeed());
             float random = (int)Mathf.Floor(UnityEngine.Random.Range(0, 2));
             if (random == 0)
             {
-                StartCoroutine(antBattleSame(ants1, ants2));
+                StartCoroutine(antBattleSame(ant1, ant2));
             }
             else
             {
-                StartCoroutine(antBattleSame(ants2, ants1));
+                StartCoroutine(antBattleSame(ant2, ant1));
             }
             yield return null;
             if (random == 0)
             {
-                StartCoroutine(antBattleSame(ants2, ants1));
+                StartCoroutine(antBattleSame(ant2, ant1));
             }
             else
             {
-                StartCoroutine(antBattleSame(ants1, ants2));
+                StartCoroutine(antBattleSame(ant1, ant2));
             }
             yield return null;
         }
@@ -70,6 +87,7 @@ public class AntFightEvent : MonoBehaviour
             {
                 Debug.Log("Ant has been defeated" + ant2.gameObject.name);
                 endBattles();
+                ant1.inBattle = false;
             }
             yield return null;
         }

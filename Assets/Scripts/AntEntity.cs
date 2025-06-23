@@ -8,7 +8,10 @@ public class AntEntity : MonoBehaviour
     private float health;
     private float attack;
     private float speed;
-    private AlliedFaction faction;
+    public AlliedFaction faction;
+    public string fakeAlliedFaction;
+    public bool inBattle = false;
+    public AntEntity entityEngagedInBattle;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -55,6 +58,7 @@ public class AntEntity : MonoBehaviour
     {
         return faction;
     }
+    
 
 
     public bool DamageAnt(float damage)
@@ -66,6 +70,7 @@ public class AntEntity : MonoBehaviour
         {
             //ant would die here
             Debug.Log("IM DEAD");
+            inBattle = false;
             return true;
         }
         else
@@ -79,6 +84,18 @@ public class AntEntity : MonoBehaviour
     public void changeColourBack()
     {
         sprite.color = new Color(1, 1, 1);
+    }
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Ant") /*&&  other.GetComponent<AntEntity>().getFaction() != faction*/)
+        {
+            if (other.GetComponent<AntEntity>().fakeAlliedFaction != fakeAlliedFaction && inBattle == false)
+            {
+                entityEngagedInBattle = other.GetComponent<AntEntity>();
+                FindAnyObjectByType<AntFightEvent>().StartFight(this, other.GetComponent<AntEntity>());
+                inBattle = true;
+            }
+        }
     }
 
     
