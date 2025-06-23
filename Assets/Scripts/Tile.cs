@@ -7,7 +7,7 @@ public class Tile
     public Vector2 Position;
     public TileType tileType;
     public GameObject tile;
-    private SpriteRenderer _spriteRenderer;
+    public SpriteRenderer _spriteRenderer;
     
 
     public Tile(GameObject gameObject, Vector2 position)
