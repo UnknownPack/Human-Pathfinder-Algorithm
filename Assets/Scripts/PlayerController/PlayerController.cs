@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
         mapDictionary = mapInstance.map;
         playerNodePlaced = new List<GameObject>();
         garbage = new List<GameObject>();
-        owenedTiles.Add(new Vector2(-4, -4), mapDictionary[new Vector2(-4, -4)]);
+        owenedTiles.Add(new Vector2(-mapInstance.size, -mapInstance.size), mapDictionary[new Vector2(-mapInstance.size, -mapInstance.size)]);
     }
 
     // Update is called once per frame
@@ -51,6 +51,10 @@ public class PlayerController : MonoBehaviour
                     Destroy(obj);
             }
             garbage.Clear();
+            possibleNodesToCapture.Clear();
+            owenedTiles.Clear();
+            mapDictionary = mapInstance.map;
+            owenedTiles.Add(new Vector2(-mapInstance.size, -mapInstance.size), mapDictionary[new Vector2(-mapInstance.size, -mapInstance.size)]);
         }
     }
 
@@ -67,28 +71,23 @@ public class PlayerController : MonoBehaviour
                 Destroy(previewInstance);
             if(possibleNodesToCapture.ContainsKey(tilePosition) 
                && !owenedTiles.ContainsKey(tilePosition)
-                && numberOfValidNodesToUse > 0)
+                && numberOfValidNodesToUse >= 1
+               && possibleNodesToCapture[tilePosition].tileType != TileType.oblivion)
             {
                 previewInstance = Instantiate(playerNode_Preview, tilePosition, Quaternion.identity);
                 if (Input.GetMouseButtonDown(0))
-                { 
-                    if (playerNodePlaced.Count < numberOfValidNodesToUse)
-                    {
-                        GameObject newNode = Instantiate(playerNode, tilePosition, Quaternion.identity);
-                        playerNodePlaced.Add(newNode);
-                        garbage.Add(newNode);
-                    }
-                    else
-                    {
-                        GameObject newNode = Instantiate(playerNode, tilePosition, Quaternion.identity);
-                        playerNodePlaced[numberOfValidNodesToUse - 1] = newNode;
-                        garbage.Add(newNode);
-                    }
-                    totalNodesCaptured++;
-                    selectedTile = mapDictionary[key];
-                    StartCoroutine(CaptureTile(selectedTile, numberOfValidNodesToUse - 1));
+                {
+                    
                     numberOfValidNodesToUse--;
                     numberOfValidNodesToUse = Mathf.Max(0, numberOfValidNodesToUse);
+                    int index = numberOfValidNodesToUse;
+                    
+                    GameObject newNode = Instantiate(playerNode, tilePosition, Quaternion.identity);
+                    playerNodePlaced.Add(newNode);
+                    garbage.Add(newNode);
+                    totalNodesCaptured++;
+                    selectedTile = mapDictionary[key];
+                    StartCoroutine(CaptureTile(selectedTile, index)); 
                 }
             }
         }
@@ -108,6 +107,8 @@ public class PlayerController : MonoBehaviour
             {
                 for (int j = -1; j <= 1; j++)
                 {
+                    if(i==j)
+                        continue;
                     Vector2 position = new Vector2(entry.Key.x + i, entry.Key.y + j);
                     if(mapDictionary.ContainsKey(position) && 
                        isTileValid_ToCapture(mapDictionary[position]) && 
@@ -128,17 +129,12 @@ public class PlayerController : MonoBehaviour
     { 
         Color startColor = tile._spriteRenderer.color, endColor = GetColorToConvert(tile.tileType);
         SpriteRenderer spriteRendererOfNode = playerNodePlaced[index].GetComponent<SpriteRenderer>();
-        float elapsedTime = 0f, duration = (tile.tileType != TileType.neutralColony)? captureTime : captureTime * 2.5f;
+        Color SC = spriteRendererOfNode.color;
+        float elapsedTime = 0f, duration = (tile.tileType != TileType.neutralColony)? captureTime : captureTime + 1.5f;
         while (elapsedTime <= duration)
-        {
-            try
-            {
-                spriteRendererOfNode = playerNodePlaced[index]?.GetComponent<SpriteRenderer>();
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"[CaptureTile] Failed to get SpriteRenderer: {ex.Message}");
-            }
+        { 
+            if(spriteRendererOfNode!=null)
+                spriteRendererOfNode.color = Color.Lerp(SC, Color.clear, elapsedTime / duration);
             if(tile._spriteRenderer!=null)
                 tile._spriteRenderer.color = Color.Lerp(startColor, endColor, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
@@ -146,7 +142,7 @@ public class PlayerController : MonoBehaviour
         }
         
         Destroy(playerNodePlaced[index]);
-        playerNodePlaced[index] = null;
+        playerNodePlaced.RemoveAt(index) ;
         yield return null;
         
         if(spriteRendererOfNode!=null)

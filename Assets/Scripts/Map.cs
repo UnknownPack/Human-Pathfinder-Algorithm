@@ -17,12 +17,14 @@ public class Map : MonoBehaviour
     public int numberOfWall = 4;
     public GameObject tilePrefab;
     public Dictionary<Vector2, Tile> map;
+    public Color startingProgressBarColor, endingProgressBarColor;
     private Dictionary<Vector2, GameObject> _grids;
     private GameObject nodeParent;
     private float currentTime;
     private Camera _camera;
     private UIDocument uiDocument;
     private ProgressBar timerProgressBar;
+    private VisualElement bar;
     private Label currentLevel, capSpeed, availableNodes, totalNodes;
     private int currentLevelCount = 1;
     private PlayerController player;
@@ -40,6 +42,8 @@ public class Map : MonoBehaviour
     {
         uiDocument = GetComponent<UIDocument>();
         timerProgressBar = uiDocument.rootVisualElement.Q<ProgressBar>("timer");
+        bar = timerProgressBar.ElementAt(0).ElementAt(0).ElementAt(0);
+        bar.style.backgroundColor = new StyleColor(startingProgressBarColor); // RGB equivalent of #e5de00
         currentTime = timer;
         timerProgressBar.highValue = timer;
         timerProgressBar.value = currentTime;
@@ -70,6 +74,8 @@ public class Map : MonoBehaviour
                           $"{player.totalNodesCaptured}";
         currentTime -= Time.deltaTime;
         timerProgressBar.value = currentTime;
+        Color lerpColor = Color.Lerp(startingProgressBarColor, endingProgressBarColor, 1-(currentTime / timer));
+        bar.style.backgroundColor = new StyleColor(lerpColor);
         //Debug.Log($"Progression: {timerProgressBar.value}");
         if(currentTime <= 0)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -118,13 +124,11 @@ public class Map : MonoBehaviour
 
         int index = 0;
 
-        // Assign resource tiles
         for (int i = 0; i < numberOfResourceNodes && index < positions.Count; i++, index++)
         {
             input[positions[index]].setTileType(TileType.resourceTile);
         }
 
-        // Assign neutral colonies
         for (int i = 0; i < numberOfColonies && index < positions.Count; i++, index++)
         {
             input[positions[index]].setTileType(TileType.neutralColony);
@@ -134,8 +138,7 @@ public class Map : MonoBehaviour
         {
             input[positions[index]].setTileType(TileType.oblivion);
         }
-
-        // Assign the rest as base tiles
+        
         for (; index < positions.Count; index++)
         {
             input[positions[index]].setTileType(TileType.baseTile);

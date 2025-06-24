@@ -42,22 +42,22 @@ public class Tile
         switch (tileType)
         {
             case (TileType.baseTile):
-                color = Color.gray;
+                color = new Color(179f/255f, 179f/255f, 179f/255f);
                 break;
             case (TileType.playerOwner):
-                color = Color.blue;
+                color = new Color(82f/255f, 82f/255f, 255f/255f);
                 break;
             case TileType.enemyOwned:
-                color = Color.red;
+                color = new Color(1, 221f/255f, 0);
                 break;
             case TileType.neutralColony:
-                color = Color.yellow;
+                color = new Color(250f/255f, 166f/255f, 63f/255f);
                 break;
             case TileType.resourceTile:
-                color = Color.green;
+                color = new Color(0.368f, 1f, 0.964f);
                 break;
             case TileType.oblivion:
-                color = Color.black;
+                color = new Color(46f/255f, 46f/255f, 46f/255f);
                 break;
             default:
                 break;
