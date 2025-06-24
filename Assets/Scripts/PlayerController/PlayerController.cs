@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public GameObject playerNode;
     public GameObject playerNode_Preview;
-    public float captureTime = 1.5f, captureTimePerNode = 0.25f;
+    public float captureTime = 1.5f, captureTimePerNode = 0.025f;
     private List<GameObject> playerNodePlaced;
     public int numberOfValidNodesToUse = 1, maxValidNodesToUse;
 
@@ -14,11 +14,15 @@ public class PlayerController : MonoBehaviour
     public Color playerCaptureColor_baseTile;
     public Color playerCaptureColor_resourceTile;
     public Color playerCaptureColor_neutralColony;
+
+    public List<AudioClip> notification;
+    
     private Dictionary<Vector2, Tile> owenedTiles, possibleNodesToCapture;
     private Dictionary<Vector2, Tile> mapDictionary;
     private GameObject previewInstance;
     private Map mapInstance;
     private Tile selectedTile;
+    private AudioSource _audioSource;
 
     private List<GameObject> garbage;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -32,7 +36,8 @@ public class PlayerController : MonoBehaviour
         mapDictionary = mapInstance.map;
         playerNodePlaced = new List<GameObject>();
         garbage = new List<GameObject>();
-        owenedTiles.Add(new Vector2(-mapInstance.size, -mapInstance.size), mapDictionary[new Vector2(-mapInstance.size, -mapInstance.size)]);
+        _audioSource = GetComponent<AudioSource>();
+        owenedTiles.Add(mapInstance.startVector, mapDictionary[mapInstance.startVector]);
     }
 
     // Update is called once per frame
@@ -49,12 +54,12 @@ public class PlayerController : MonoBehaviour
             {
                 if(obj != null)
                     Destroy(obj);
-            }
+            } 
             garbage.Clear();
             possibleNodesToCapture.Clear();
             owenedTiles.Clear();
             mapDictionary = mapInstance.map;
-            owenedTiles.Add(new Vector2(-mapInstance.size, -mapInstance.size), mapDictionary[new Vector2(-mapInstance.size, -mapInstance.size)]);
+            owenedTiles.Add(mapInstance.startVector, mapDictionary[mapInstance.startVector]);
         }
     }
 
@@ -84,10 +89,9 @@ public class PlayerController : MonoBehaviour
                     
                     GameObject newNode = Instantiate(playerNode, tilePosition, Quaternion.identity);
                     playerNodePlaced.Add(newNode);
-                    garbage.Add(newNode);
-                    totalNodesCaptured++;
+                    garbage.Add(newNode); 
                     selectedTile = mapDictionary[key];
-                    StartCoroutine(CaptureTile(selectedTile, index)); 
+                    StartCoroutine(CaptureTile(selectedTile, newNode)); 
                 }
             }
         }
@@ -107,7 +111,7 @@ public class PlayerController : MonoBehaviour
             {
                 for (int j = -1; j <= 1; j++)
                 {
-                    if(i==j)
+                    if (Mathf.Abs(i) == 1 && Mathf.Abs(j) == 1)
                         continue;
                     Vector2 position = new Vector2(entry.Key.x + i, entry.Key.y + j);
                     if(mapDictionary.ContainsKey(position) && 
@@ -125,10 +129,10 @@ public class PlayerController : MonoBehaviour
     {
         return tile.tileType !=  TileType.playerOwner;
     }
-    IEnumerator CaptureTile(Tile tile, int index)
+    IEnumerator CaptureTile(Tile tile, GameObject node)
     { 
         Color startColor = tile._spriteRenderer.color, endColor = GetColorToConvert(tile.tileType);
-        SpriteRenderer spriteRendererOfNode = playerNodePlaced[index].GetComponent<SpriteRenderer>();
+        SpriteRenderer spriteRendererOfNode = node.GetComponent<SpriteRenderer>();
         Color SC = spriteRendererOfNode.color;
         float elapsedTime = 0f, duration = (tile.tileType != TileType.neutralColony)? captureTime : captureTime + 1.5f;
         while (elapsedTime <= duration)
@@ -141,8 +145,8 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         
-        Destroy(playerNodePlaced[index]);
-        playerNodePlaced.RemoveAt(index) ;
+        Destroy(node);
+        playerNodePlaced.Remove(node) ;
         yield return null;
         
         if(spriteRendererOfNode!=null)
@@ -152,9 +156,10 @@ public class PlayerController : MonoBehaviour
         
         if(possibleNodesToCapture.ContainsKey(tile.Position))
             possibleNodesToCapture.Remove(tile.Position);
-        BoostPlayerStats(tile); 
-        owenedTiles.Add(tile.Position, tile); 
+        BoostPlayerStats(tile);
+        owenedTiles.TryAdd(tile.Position, tile); 
         numberOfValidNodesToUse++; 
+        totalNodesCaptured++;
     }
 
     void BoostPlayerStats(Tile tile)
@@ -162,15 +167,20 @@ public class PlayerController : MonoBehaviour
         switch (tile.tileType)
         {
             case (TileType.resourceTile):
-                captureTime += captureTimePerNode;
+                captureTime -= captureTimePerNode;
                 break;
             case (TileType.neutralColony):
                 numberOfValidNodesToUse++;
                 maxValidNodesToUse++;
                 numberOfValidNodesToUse = Mathf.Clamp(numberOfValidNodesToUse, 1, mapInstance.numberOfColonies);
                 break;
-        }
+            case TileType.enemyOwned:
+                _audioSource.clip = notification[1];
+                _audioSource.Play();
+                break;
+        } 
     }
+ 
 
     Color GetColorToConvert(TileType tileType)
     {

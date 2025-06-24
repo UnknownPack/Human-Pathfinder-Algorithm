@@ -1,9 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row; background-color: rgba(0, 0, 0, 0);">
         <ui:VisualElement style="flex-grow: 1; width: 25%;">
-            <ui:VisualElement name="AntPannel" style="flex-grow: 1; width: 30%; background-color: rgb(0, 0, 0);">
+            <ui:VisualElement name="AntPannel" style="flex-grow: 1; width: 30%; background-color: rgba(89, 89, 89, 0.78);">
                 <ui:VisualElement style="flex-grow: 1; height: 20%; min-height: 20%; max-height: 20%; margin-top: 150px;">
-                    <ui:Label text="Level 1" name="levelDisplay" style="width: 100%; height: 100%; min-height: 100%; max-height: 100%; -unity-font-style: bold; -unity-text-align: middle-center; font-size: 30px; color: rgb(35, 255, 0); -unity-text-outline-width: 1px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <ui:Label text="Level 1" name="levelDisplay" style="width: 100%; height: 100%; min-height: 100%; max-height: 100%; -unity-font-style: bold; -unity-text-align: middle-center; font-size: 50px; color: rgb(123, 255, 102); -unity-text-outline-width: 1px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="v" style="flex-grow: 1; height: 20%; min-height: 20%; max-height: 20%; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
                     <ui:Label text="Level 1" name="CapSpeed" style="width: 100%; height: 100%; min-height: 100%; max-height: 100%; -unity-font-style: bold; -unity-text-align: middle-center; font-size: 30px; color: rgb(0, 255, 218); -unity-text-outline-width: 1px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
@@ -13,9 +13,9 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement style="flex-grow: 1; width: 25%; flex-direction: column;">
-            <ui:VisualElement name="ResourcePanel" style="flex-grow: 1; width: 30%; flex-direction: column; left: auto; background-color: rgb(0, 0, 0); align-items: flex-end; align-self: flex-end;">
+            <ui:VisualElement name="ResourcePanel" style="flex-grow: 1; width: 30%; flex-direction: column; left: auto; background-color: rgba(89, 89, 89, 0.78); align-items: flex-end; align-self: flex-end;">
                 <ui:VisualElement style="flex-grow: 1; width: 100%; height: 10%; min-height: 10%; max-height: 10%;">
-                    <ui:Label text="Remaining Time" style="width: 100%; height: 100%; min-height: 100%; max-height: 100%; -unity-font-style: bold; -unity-text-align: middle-center; font-size: 30px; color: rgb(255, 0, 0); -unity-text-outline-width: 1px;" />
+                    <ui:Label text="Remaining Time" style="width: 100%; height: 100%; min-height: 100%; max-height: 100%; -unity-font-style: bold; -unity-text-align: middle-center; font-size: 35px; color: rgb(255, 0, 0); -unity-text-outline-width: 1px;" />
                 </ui:VisualElement>
                 <ui:ProgressBar value="22" name="timer" style="rotate: -90deg; width: 600px; left: auto; top: 468px; right: -156px;" />
             </ui:VisualElement>

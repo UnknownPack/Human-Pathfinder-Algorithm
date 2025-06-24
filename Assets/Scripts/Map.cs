@@ -9,8 +9,8 @@ using Random = UnityEngine.Random;
 public class Map : MonoBehaviour
 {
     public GameObject camera;
-    public float timer = 125f;
-    public Vector2 goalVector2;
+    public float timer = 125f, timerDeIncrament = 0.2f;
+    public Vector2 startVector, goalVector2;
     public int size;
     public int numberOfColonies = 4;
     public int numberOfResourceNodes = 9;
@@ -28,6 +28,7 @@ public class Map : MonoBehaviour
     private Label currentLevel, capSpeed, availableNodes, totalNodes;
     private int currentLevelCount = 1;
     private PlayerController player;
+    private int[] gradient;
     
 
 
@@ -52,6 +53,7 @@ public class Map : MonoBehaviour
         totalNodes = uiDocument.rootVisualElement.Q<Label>("totalNodes");
         availableNodes = uiDocument.rootVisualElement.Q<Label>("nodeCount");
         _camera = camera.GetComponent<Camera>();
+        gradient = new[] { -1, 0, 1 };
     }
 
     private void Update()
@@ -68,15 +70,13 @@ public class Map : MonoBehaviour
             Debug.LogError("PlayerController not set in Map script.");
             return;
         } 
-        capSpeed.text = "Capture Speed: " + player.captureTime; 
+        capSpeed.text = "Capture Speed:\n " + player.captureTime.ToString("F2"); 
         availableNodes.text = $"Cap Nodes: {player.numberOfValidNodesToUse}/{player.maxValidNodesToUse}";
-        totalNodes.text = $"Total nodes captured:\n " +
-                          $"{player.totalNodesCaptured}";
+        totalNodes.text = $"Total nodes\ncaptured: {player.totalNodesCaptured}";
         currentTime -= Time.deltaTime;
         timerProgressBar.value = currentTime;
         Color lerpColor = Color.Lerp(startingProgressBarColor, endingProgressBarColor, 1-(currentTime / timer));
         bar.style.backgroundColor = new StyleColor(lerpColor);
-        //Debug.Log($"Progression: {timerProgressBar.value}");
         if(currentTime <= 0)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -108,12 +108,7 @@ public class Map : MonoBehaviour
 
     private void ProcedurallyGenerateNodes(Dictionary<Vector2, Tile> input)
     {
-        // Get all eligible positions (excluding player/enemy positions)
         List<Vector2> positions = new List<Vector2>(input.Keys);
-        positions.Remove(new Vector2(-size, -size)); // player position
-        positions.Remove(new Vector2(size, size));   // enemy position
-
-        // Shuffle the list
         for (int i = 0; i < positions.Count; i++)
         {
             Vector2 temp = positions[i];
@@ -144,21 +139,30 @@ public class Map : MonoBehaviour
             input[positions[index]].setTileType(TileType.baseTile);
         }
 
-        // Manually assign player and enemy tiles
-        input[new Vector2(-size, -size)].setTileType(TileType.playerOwner);
-        goalVector2 = new Vector2(size, size);
-        input[new Vector2(size, size)].setTileType(TileType.enemyOwned);
+        List<Vector2> availablePositions = new List<Vector2>(input.Keys);
+        availablePositions.RemoveAll(pos => input[pos].tileType != TileType.baseTile);
+
+        int enemyIndex = Random.Range(0, availablePositions.Count);
+        Vector2 enemyPos = availablePositions[enemyIndex];
+        goalVector2 = enemyPos;
+        input[enemyPos].setTileType(TileType.enemyOwned);
+
+        availablePositions.RemoveAt(enemyIndex);
+        int playerIndex = Random.Range(0, availablePositions.Count);
+        Vector2 playerPos = availablePositions[playerIndex];
+        startVector = playerPos;
+        input[playerPos].setTileType(TileType.playerOwner);
+    }
+
+    private void AssignNodes()
+    {
+        
     }
  
 
     #endregion
 
     #region Helper Methods
-
-    public Dictionary<Vector2, Tile> getMap()
-    {
-        return map;
-    }
     
     public void SetPlayerController(PlayerController playerController)
     {
@@ -167,14 +171,16 @@ public class Map : MonoBehaviour
 
     public void IncreaseMapDifficulty()
     {
-        size ++;
-        numberOfWall += 2;
+        numberOfResourceNodes += (int)(numberOfResourceNodes * 0.25);
+        numberOfColonies += (int)(numberOfColonies * 0.25);
+        numberOfWall += (int)(numberOfWall * 0.25);
+        size ++; 
         GenerateNodes(size);
-        _camera.orthographicSize += 0.5f;
-        timer-=0.25f;
+        _camera.orthographicSize += 1f;
+        timer-=timerDeIncrament;
         currentTime = timer;
         timerProgressBar.highValue = timer;
-        timerProgressBar.lowValue = currentTime;
+        timerProgressBar.value = currentTime;
         currentLevelCount++;
     }
 
