@@ -26,7 +26,7 @@ public class Map : MonoBehaviour
     private ProgressBar timerProgressBar;
     private VisualElement bar;
     private Label currentLevel, capSpeed, availableNodes, totalNodes;
-    private int currentLevelCount = 1;
+    private int currentLevelCount = 1, mapSizeIncrease = 1;
     private PlayerController player;
     private int[] gradient;
     
@@ -58,19 +58,13 @@ public class Map : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Destroy(nodeParent);
-            GenerateNodes(size);
-        }
-        
         currentLevel.text = "Level: " + currentLevelCount;
         if(player== null)
         {
             Debug.LogError("PlayerController not set in Map script.");
             return;
         } 
-        capSpeed.text = "Capture Speed:\n " + player.captureTime.ToString("F2"); 
+        capSpeed.text = "Capture Time:\n " + player.captureTime.ToString("F2"); 
         availableNodes.text = $"Cap Nodes: {player.numberOfValidNodesToUse}/{player.maxValidNodesToUse}";
         totalNodes.text = $"Total nodes\ncaptured: {player.totalNodesCaptured}";
         currentTime -= Time.deltaTime;
@@ -176,7 +170,8 @@ public class Map : MonoBehaviour
         numberOfWall += (int)(numberOfWall * 0.25);
         size ++; 
         GenerateNodes(size);
-        _camera.orthographicSize += 1f;
+        _camera.orthographicSize += mapSizeIncrease;
+        mapSizeIncrease *= mapSizeIncrease;
         timer-=timerDeIncrament;
         currentTime = timer;
         timerProgressBar.highValue = timer;
